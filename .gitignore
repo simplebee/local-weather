@@ -1,1 +1,5 @@
+#Sublime text workspace settings
 *.sublime-workspace
+
+#Config file containing OpenWeatherMap api key
+config.js
