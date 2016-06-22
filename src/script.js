@@ -14,7 +14,7 @@ function getData(data) {
   console.log("Success");
   console.log(data);
   console.log("location", data.name);
-  console.log("time", data.dt);
+  console.log("time", data.dt, convertUnixTime(data.dt));
   console.log("weather icon",data.weather[0].icon);
   console.log("current temp", data.main.temp);
   console.log("weather description", data.weather[0].description);
@@ -23,6 +23,12 @@ function getData(data) {
   console.log("humidity", data.main.humidity);
 
   $("h2").html(data.name);
+  $("h4").html(convertUnixTime(data.dt));
+}
+
+function convertUnixTime(unix) {
+  var time = new Date(unix * 1000);
+  return time.toLocaleTimeString([],{hour: "2-digit", minute: "2-digit"});
 }
 
 $(document).ready(function() {
