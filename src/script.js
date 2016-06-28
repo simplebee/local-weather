@@ -16,7 +16,7 @@ function getData(data) {
   console.log("location", data.name);
   console.log("time", convertUnixTime(data.dt));
   console.log("icon", getIcon(data.weather[0].icon));
-  console.log("temp", data.main.temp);
+  console.log("temp", kelvinToCelsius(data.main.temp));
   console.log("description", data.weather[0].description);
   console.log("wind", data.wind.speed);
   // console.log("rain", data.rain["3h"]);
@@ -25,6 +25,7 @@ function getData(data) {
   $("h2").html(data.name);
   $("h4").html(convertUnixTime(data.dt));
   $("i").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
+  $("h1").html(kelvinToCelsius(data.main.temp));
 }
 
 function convertUnixTime(unix) {
@@ -54,6 +55,10 @@ function getIcon(id) {
     "50n": "wi-fog"
   }
   return icon[id];
+}
+
+function kelvinToCelsius(k) {
+  return Math.round(k - 273.15)
 }
 
 $(document).ready(function() {
