@@ -17,7 +17,7 @@ function getData(data) {
   console.log("time", convertUnixTime(data.dt));
   console.log("icon", getIcon(data.weather[0].icon));
   console.log("temp", kelvinToCelsius(data.main.temp));
-  console.log("description", data.weather[0].description);
+  console.log("description", capitaliseFirstLetter(data.weather[0].description));
   console.log("wind", data.wind.speed);
   // console.log("rain", data.rain["3h"]);
   console.log("humidity", data.main.humidity);
@@ -26,6 +26,7 @@ function getData(data) {
   $("h4").html(convertUnixTime(data.dt));
   $("i").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
   $("h1").html(kelvinToCelsius(data.main.temp));
+  $("h3").html(capitaliseFirstLetter(data.weather[0].description));
 }
 
 function convertUnixTime(unix) {
@@ -59,6 +60,10 @@ function getIcon(id) {
 
 function kelvinToCelsius(k) {
   return Math.round(k - 273.15)
+}
+
+function capitaliseFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 $(document).ready(function() {
