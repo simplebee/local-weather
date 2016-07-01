@@ -19,8 +19,8 @@ function getData(data) {
   console.log("temp", kelvinToCelsius(data.main.temp));
   console.log("description", capitaliseFirstLetter(data.weather[0].description));
   console.log("wind", data.wind.speed);
-  // console.log("rain", data.rain["3h"]);
   console.log("humidity", data.main.humidity);
+  console.log("pressure", data.main.pressure);
 
   $("h2").html(data.name);
   $("h4").html(convertUnixTime(data.dt));
