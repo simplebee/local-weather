@@ -27,6 +27,9 @@ function getData(data) {
   $("#icon").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
   $("#temp").html(kelvinToCelsius(data.main.temp));
   $("#description").html(capitaliseFirstLetter(data.weather[0].description));
+  $("#wind").html(data.wind.speed);
+  $("#humidity").html(data.main.humidity);
+  $("#pressure").html(data.main.pressure);
 }
 
 function convertUnixTime(unix) {
