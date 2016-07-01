@@ -22,11 +22,11 @@ function getData(data) {
   console.log("humidity", data.main.humidity);
   console.log("pressure", data.main.pressure);
 
-  $("h2").html(data.name);
-  $("h4").html(convertUnixTime(data.dt));
-  $("i").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
-  $("h1").html(kelvinToCelsius(data.main.temp));
-  $("h3").html(capitaliseFirstLetter(data.weather[0].description));
+  $("#location").html(data.name);
+  $("#time").html(convertUnixTime(data.dt));
+  $("#icon").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
+  $("#temp").html(kelvinToCelsius(data.main.temp));
+  $("#description").html(capitaliseFirstLetter(data.weather[0].description));
 }
 
 function convertUnixTime(unix) {

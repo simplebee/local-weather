@@ -6,17 +6,18 @@ div {
   border: solid 1px #BD8F64;
 }
 
-h1,
-h2,
-h3,
-h4 {
+#location,
+#time,
+#icon,
+#temp,
+#description {
   text-align: center;
 }
 
-h1 {
+#temp {
   font-size: 10em;
 }
 
-i {
+#icon {
   font-size: 10em;
 }
