@@ -69,8 +69,26 @@ function capitaliseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+function geoSuccess(position) {
+  console.log(position.coords.latitude);
+  console.log(position.coords.longitude);
+}
+
+function geoError(error) {
+  console.log("Geolocation error(" + error.code + "): "+error.message);
+}
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+  } else {
+    console.log("geolocation is not supported")
+  }
+}
+
 $(document).ready(function() {
   ajax().done(getData).fail(function() {
     console.log("Fail");
   });
+  $("#getlocation").on("click", getLocation);
 });
