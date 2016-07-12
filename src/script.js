@@ -1,8 +1,9 @@
-function ajax() {
+function ajax(lat, lon) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
     data: {
-      q: "london,uk",
+      lat: lat,
+      lon: lon,
       APPID: openWeatherMap.apikey
     },
     type: "GET",
@@ -72,10 +73,17 @@ function capitaliseFirstLetter(str) {
 function geoSuccess(position) {
   console.log(position.coords.latitude);
   console.log(position.coords.longitude);
+
+  var lat = position.coords.latitude;
+  var lon = position.coords.longitude;
+
+  ajax(lat, lon).done(getData).fail(function() {
+    console.log("Fail");
+  });
 }
 
 function geoError(error) {
-  console.log("Geolocation error(" + error.code + "): "+error.message);
+  console.log("Geolocation error(" + error.code + "): " + error.message);
 }
 
 function getLocation() {
@@ -87,7 +95,7 @@ function getLocation() {
 }
 
 $(document).ready(function() {
-  ajax().done(getData).fail(function() {
+  ajax(51.5074, -0.1278).done(getData).fail(function() {
     console.log("Fail");
   });
   $("#getlocation").on("click", getLocation);
