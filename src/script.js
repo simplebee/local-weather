@@ -71,11 +71,11 @@ function capitaliseFirstLetter(str) {
 }
 
 function geoSuccess(position) {
-  console.log(position.coords.latitude);
-  console.log(position.coords.longitude);
-
   var lat = position.coords.latitude;
   var lon = position.coords.longitude;
+
+  console.log(lat);
+  console.log(lon);
 
   ajax(lat, lon).done(getData).fail(function() {
     console.log("Fail");
