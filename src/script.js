@@ -1,9 +1,10 @@
-function ajax(lat, lon) {
+function ajax(lat, lon, city) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
     data: {
       lat: lat,
       lon: lon,
+      q: city,
       APPID: openWeatherMap.apikey
     },
     type: "GET",
@@ -95,7 +96,7 @@ function getLocation() {
 }
 
 $(document).ready(function() {
-  ajax(51.5074, -0.1278).done(getData).fail(function() {
+  ajax("" ,"" ,"birmingham").done(getData).fail(function() {
     console.log("Fail");
   });
   $("#getlocation").on("click", getLocation);
