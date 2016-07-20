@@ -2,10 +2,6 @@ body {
   background-color: #F0B67F;
 }
 
-div {
-  border: solid 1px #BD8F64;
-}
-
 #location,
 #time,
 #icon,
