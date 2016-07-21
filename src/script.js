@@ -96,7 +96,7 @@ function getLocation() {
 }
 
 $(document).ready(function() {
-  ajax("" ,"" ,"birmingham").done(getData).fail(function() {
+  ajax("" ,"" ,"london").done(getData).fail(function() {
     console.log("Fail");
   });
   $("#getlocation").on("click", getLocation);
