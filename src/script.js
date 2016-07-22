@@ -95,9 +95,17 @@ function getLocation() {
   }
 }
 
+function getSearch() {
+  var input = $("input").val();
+  ajax("" ,"" ,input).done(getData).fail(function() {
+    console.log("Fail");
+  });
+}
+
 $(document).ready(function() {
   ajax("" ,"" ,"london").done(getData).fail(function() {
     console.log("Fail");
   });
   $("#getlocation").on("click", getLocation);
+  $("form").on("submit", getSearch);
 });
