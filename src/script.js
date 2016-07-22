@@ -1,9 +1,20 @@
-function ajax(lat, lon, city) {
+function ajaxGeo(lat, lon) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
     data: {
       lat: lat,
       lon: lon,
+      APPID: openWeatherMap.apikey
+    },
+    type: "GET",
+    datatype: "json"
+  });
+}
+
+function ajaxCity(city) {
+  return $.ajax({
+    url: "http://api.openweathermap.org/data/2.5/weather",
+    data: {
       q: city,
       APPID: openWeatherMap.apikey
     },
@@ -78,7 +89,7 @@ function geoSuccess(position) {
   console.log(lat);
   console.log(lon);
 
-  ajax(lat, lon).done(getData).fail(function() {
+  ajaxGeo(lat, lon).done(getData).fail(function() {
     console.log("Fail");
   });
 }
@@ -97,15 +108,15 @@ function getLocation() {
 
 function getSearch() {
   var input = $("input").val();
-  ajax("" ,"" ,input).done(getData).fail(function() {
+  ajaxCity(input).done(getData).fail(function() {
     console.log("Fail");
   });
 }
 
 $(document).ready(function() {
-  ajax("" ,"" ,"london").done(getData).fail(function() {
+  ajaxCity("london").done(getData).fail(function() {
     console.log("Fail");
   });
   $("#getlocation").on("click", getLocation);
-  $("form").on("submit", getSearch);
+  $("form").on("click", getSearch);
 });
