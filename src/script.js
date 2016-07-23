@@ -1,9 +1,10 @@
-function ajaxGeo(lat, lon) {
+function ajax(lat, lon, city) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
     data: {
       lat: lat,
       lon: lon,
+      q: city,
       APPID: openWeatherMap.apikey
     },
     type: "GET",
@@ -11,15 +12,9 @@ function ajaxGeo(lat, lon) {
   });
 }
 
-function ajaxCity(city) {
-  return $.ajax({
-    url: "http://api.openweathermap.org/data/2.5/weather",
-    data: {
-      q: city,
-      APPID: openWeatherMap.apikey
-    },
-    type: "GET",
-    datatype: "json"
+function ajaxDoneFail(lat, lon, city) {
+  return ajax(lat, lon, city).done(getData).fail(function() {
+    console.log("Fail");
   });
 }
 
@@ -89,9 +84,7 @@ function geoSuccess(position) {
   console.log(lat);
   console.log(lon);
 
-  ajaxGeo(lat, lon).done(getData).fail(function() {
-    console.log("Fail");
-  });
+  ajaxDoneFail(lat, lon);
 }
 
 function geoError(error) {
@@ -102,21 +95,17 @@ function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
   } else {
-    console.log("geolocation is not supported")
+    console.log("Geolocation is not supported")
   }
 }
 
 function getSearch() {
   var input = $("input").val();
-  ajaxCity(input).done(getData).fail(function() {
-    console.log("Fail");
-  });
+  ajaxDoneFail("", "", input);
 }
 
 $(document).ready(function() {
-  ajaxCity("london").done(getData).fail(function() {
-    console.log("Fail");
-  });
+  ajaxDoneFail("", "", "london");
   $("#getlocation").on("click", getLocation);
   $("form").on("click", getSearch);
 });
