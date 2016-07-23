@@ -107,5 +107,5 @@ function getSearch() {
 $(document).ready(function() {
   ajaxDoneFail("", "", "london");
   $("#getlocation").on("click", getLocation);
-  $("form").on("click", getSearch);
+  $("#searchbutton").on("click", getSearch);
 });
