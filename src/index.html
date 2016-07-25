@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <!-- Bootstrap optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Bootstrap Toggle -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <!-- CSS -->
     <link href="style.css" rel="stylesheet" type="text/css" >
   </head>
@@ -27,8 +29,9 @@
                 <button type="button" class="btn btn-default" id="searchbutton"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
               </form>
               <button type="button" class="btn btn-default navbar-btn" id="getlocation"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button>
-              <button type="button" class="btn btn-default navbar-btn navbar-right">F</button>
-              <button type="button" class="btn btn-default navbar-btn navbar-right">C</button>
+              <form class="navbar-form navbar-right">
+                <input type="checkbox" checked data-toggle="toggle" data-on="°C" data-off="°F">
+              </form>
             </div>
           </nav>
           <!-- Location -->
@@ -81,6 +84,8 @@
   <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
   <!-- Bootstrap JS -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <!-- Bootstrap Toggle -->
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
   <!-- JS -->
   <script src="config.js" type="text/javascript"></script>
   <script src="script.js" type="text/javascript"></script>
