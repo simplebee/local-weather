@@ -22,7 +22,6 @@ function getData(data) {
   console.log("Success");
   console.log(data);
   console.log("location", data.name);
-  console.log("time", convertUnixTime(data.dt));
   console.log("icon", getIcon(data.weather[0].icon));
   console.log("temp", kelvinToCelsius(data.main.temp));
   console.log("description", capitaliseFirstLetter(data.weather[0].description));
@@ -31,18 +30,12 @@ function getData(data) {
   console.log("pressure", data.main.pressure);
 
   $("#location").html(data.name);
-  $("#time").html(convertUnixTime(data.dt));
   $("#icon").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
   $("#temp").html(kelvinToCelsius(data.main.temp));
   $("#description").html(capitaliseFirstLetter(data.weather[0].description));
   $("#wind").html(data.wind.speed);
   $("#humidity").html(data.main.humidity);
   $("#pressure").html(data.main.pressure);
-}
-
-function convertUnixTime(unix) {
-  var time = new Date(unix * 1000);
-  return time.toLocaleTimeString([],{hour: "2-digit", minute: "2-digit"});
 }
 
 function getIcon(id) {
