@@ -45,6 +45,9 @@ function getData(data) {
   $("#wind").html(speed);
   $("#humidity").html(humidity);
   $("#pressure").html(pressure);
+
+  $("body").data("metric", temp);
+  convertTemp();
 }
 
 function getIcon(id) {
@@ -103,8 +106,24 @@ function getSearch() {
   ajaxDoneFail("", "", input);
 }
 
+function metricToImperial(temp) {
+  return Math.round(temp * 1.8 + 32);
+}
+
+function convertTemp() {
+  var $toggle = $("#toggle");
+  var $temp = $("body").data("metric");
+  if ($toggle.is(":checked")) {
+    $("#temp").html($temp);
+  } else {
+    $("#temp").html(metricToImperial($temp));
+  }
+}
+
 $(document).ready(function() {
   ajaxDoneFail("", "", "london");
   $("#getlocation").on("click", getLocation);
   $("#searchbutton").on("click", getSearch);
+  $("#toggle").on("change", convertTemp);
+
 });
