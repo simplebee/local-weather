@@ -5,6 +5,7 @@ function ajax(lat, lon, city) {
       lat: lat,
       lon: lon,
       q: city,
+      units: "metric",
       APPID: openWeatherMap.apikey
     },
     type: "GET",
@@ -14,28 +15,36 @@ function ajax(lat, lon, city) {
 
 function ajaxDoneFail(lat, lon, city) {
   return ajax(lat, lon, city).done(getData).fail(function() {
-    console.log("Fail");
+    console.log("Ajax: Fail");
   });
 }
 
 function getData(data) {
-  console.log("Success");
-  console.log(data);
-  console.log("location", data.name);
-  console.log("icon", getIcon(data.weather[0].icon));
-  console.log("temp", kelvinToCelsius(data.main.temp));
-  console.log("description", capitaliseFirstLetter(data.weather[0].description));
-  console.log("wind", data.wind.speed);
-  console.log("humidity", data.main.humidity);
-  console.log("pressure", data.main.pressure);
+  var city = data.name;
+  var icon = getIcon(data.weather[0].icon);
+  var temp = Math.round(data.main.temp);
+  var description = capitaliseFirstLetter(data.weather[0].description);
+  var speed = data.wind.speed;
+  var humidity = data.main.humidity;
+  var pressure = data.main.pressure;
 
-  $("#location").html(data.name);
-  $("#icon").removeClass().addClass("wi " + getIcon(data.weather[0].icon));
-  $("#temp").html(kelvinToCelsius(data.main.temp));
-  $("#description").html(capitaliseFirstLetter(data.weather[0].description));
-  $("#wind").html(data.wind.speed);
-  $("#humidity").html(data.main.humidity);
-  $("#pressure").html(data.main.pressure);
+  console.log("Ajax: Success");
+  console.log(data);
+  console.log("Location:", city);
+  console.log("Icon:", icon);
+  console.log("Temp:", temp);
+  console.log("Description:", description);
+  console.log("Wind:", speed);
+  console.log("Humidity:", humidity);
+  console.log("Pressure:", pressure);
+
+  $("#location").html(city);
+  $("#icon").removeClass().addClass("wi " + icon);
+  $("#temp").html(temp);
+  $("#description").html(description);
+  $("#wind").html(speed);
+  $("#humidity").html(humidity);
+  $("#pressure").html(pressure);
 }
 
 function getIcon(id) {
@@ -62,10 +71,6 @@ function getIcon(id) {
   return icon[id];
 }
 
-function kelvinToCelsius(k) {
-  return Math.round(k - 273.15)
-}
-
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -74,8 +79,9 @@ function geoSuccess(position) {
   var lat = position.coords.latitude;
   var lon = position.coords.longitude;
 
-  console.log(lat);
-  console.log(lon);
+  console.log("Geolocation: Success");
+  console.log("Lat:", lat);
+  console.log("Lon:", lon);
 
   ajaxDoneFail(lat, lon);
 }
