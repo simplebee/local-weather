@@ -1,22 +1,29 @@
-function ajax(lat, lon, city) {
+function ajax(data) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
-    data: {
-      lat: lat,
-      lon: lon,
-      q: city,
-      units: "metric",
-      APPID: openWeatherMap.apikey
-    },
+    data: data,
     type: "GET",
     datatype: "json"
   });
 }
 
-function ajaxDoneFail(lat, lon, city) {
-  return ajax(lat, lon, city).done(getData).fail(function() {
+function ajaxDoneFail(data) {
+  return ajax(data).done(getData).fail(function() {
     console.log("Ajax: Fail");
   });
+}
+
+function extendAjaxData(obj) {
+  var src = {
+    units: "metric",
+    APPID: openWeatherMap.apikey
+  };
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      src[key] = obj[key];
+    }
+  }
+  return src;
 }
 
 function getData(data) {
@@ -79,14 +86,19 @@ function capitaliseFirstLetter(str) {
 }
 
 function geoSuccess(position) {
-  var lat = position.coords.latitude;
-  var lon = position.coords.longitude;
+  var latCoord = position.coords.latitude;
+  var lonCoord = position.coords.longitude;
 
   console.log("Geolocation: Success");
-  console.log("Lat:", lat);
-  console.log("Lon:", lon);
+  console.log("Lat:", latCoord);
+  console.log("Lon:", lonCoord);
 
-  ajaxDoneFail(lat, lon);
+  var obj= {
+    lat: latCoord,
+    lon: lonCoord
+  };
+
+  ajaxDoneFail(extendAjaxData(obj));
 }
 
 function geoError(error) {
@@ -102,8 +114,11 @@ function getLocation() {
 }
 
 function getSearch() {
-  var input = $("input").val();
-  ajaxDoneFail("", "", input);
+  var searchInput = $("input").val();
+  var obj = {
+    q: searchInput
+  };
+  ajaxDoneFail(extendAjaxData(obj));
 }
 
 function metricToImperial(temp) {
@@ -121,9 +136,11 @@ function convertTemp() {
 }
 
 $(document).ready(function() {
-  ajaxDoneFail("", "", "london");
+  var obj = {
+    q: "london"
+  };
+  ajaxDoneFail(extendAjaxData(obj));
   $("#getlocation").on("click", getLocation);
   $("#searchbutton").on("click", getSearch);
   $("#toggle").on("change", convertTemp);
-
 });
