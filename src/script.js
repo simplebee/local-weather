@@ -28,6 +28,7 @@ function extendAjaxData(obj) {
 
 function getData(data) {
   var city = data.name;
+  var cityID = data.id;
   var icon = getIcon(data.weather[0].icon);
   var temp = Math.round(data.main.temp);
   var description = capitaliseFirstLetter(data.weather[0].description);
@@ -37,7 +38,7 @@ function getData(data) {
 
   console.log("Ajax: Success");
   console.log(data);
-  console.log("Location:", city);
+  console.log("Location:", city, cityID);
   console.log("Icon:", icon);
   console.log("Temp:", temp);
   console.log("Description:", description);
@@ -53,7 +54,8 @@ function getData(data) {
   $("#humidity").html(humidity);
   $("#pressure").html(pressure);
 
-  $("body").data("metric", temp);
+  sessionStorage.setItem("tempMetric", temp);
+  sessionStorage.setItem("cityID", cityID);
   convertTemp();
 }
 
@@ -127,18 +129,25 @@ function metricToImperial(temp) {
 
 function convertTemp() {
   var $toggle = $("#toggle");
-  var $temp = $("body").data("metric");
+  var tempMetric = sessionStorage.tempMetric;
   if ($toggle.is(":checked")) {
-    $("#temp").html($temp);
+    $("#temp").html(tempMetric);
   } else {
-    $("#temp").html(metricToImperial($temp));
+    $("#temp").html(metricToImperial(tempMetric));
+  }
+}
+
+function savedSessionLocation() {
+  var cityID = sessionStorage.cityID;
+  if (cityID == undefined) {
+    return {q: "london"};
+  } else {
+    return {id: cityID};
   }
 }
 
 $(document).ready(function() {
-  var obj = {
-    q: "london"
-  };
+  var obj = savedSessionLocation();
   ajaxDoneFail(extendAjaxData(obj));
   $("#getlocation").on("click", getLocation);
   $("#searchbutton").on("click", getSearch);
