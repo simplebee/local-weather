@@ -27,7 +27,8 @@ function extendAjaxData(obj) {
 }
 
 function getData(data) {
-  var city = data.name;
+  var cityName = data.name;
+  var cityCountry = data.sys.country;
   var cityID = data.id;
   var icon = getIcon(data.weather[0].icon);
   var temp = Math.round(data.main.temp);
@@ -38,7 +39,7 @@ function getData(data) {
 
   console.log("Ajax: Success");
   console.log(data);
-  console.log("Location:", city, cityID);
+  console.log("Location:", cityName, cityCountry, cityID);
   console.log("Icon:", icon);
   console.log("Temp:", temp);
   console.log("Description:", description);
@@ -46,7 +47,7 @@ function getData(data) {
   console.log("Humidity:", humidity);
   console.log("Pressure:", pressure);
 
-  $("#location").html(city);
+  $("#location").html(cityName + " " + cityCountry);
   $("#icon").removeClass().addClass("wi " + icon);
   $("#temp").html(temp);
   $("#description").html(description);
