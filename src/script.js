@@ -111,16 +111,17 @@ function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
   } else {
-    console.log("Geolocation is not supported")
+    console.log("Geolocation is not supported");
   }
 }
 
-function getSearch() {
-  var searchInput = $("input").val();
+function getSearch(event) {
+  var $searchInput = $("input").val();
   var obj = {
-    q: searchInput
+    q: $searchInput
   };
   ajaxDoneFail(extendAjaxData(obj));
+  event.preventDefault();
 }
 
 function metricToImperial(temp) {
@@ -150,6 +151,6 @@ $(document).ready(function() {
   var obj = savedSessionLocation();
   ajaxDoneFail(extendAjaxData(obj));
   $("#getlocation").on("click", getLocation);
-  $("#searchbutton").on("click", getSearch);
+  $("form").on("submit", getSearch);
   $("#toggle").on("change", convertTemp);
 });
