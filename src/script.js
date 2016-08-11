@@ -27,19 +27,18 @@ function extendAjaxData(obj) {
 }
 
 function getData(data) {
-  var cityName = data.name;
-  var cityCountry = data.sys.country;
+  var cityCountry = data.name + " " + data.sys.country;
   var cityID = data.id;
   var icon = getIcon(data.weather[0].icon);
   var temp = Math.round(data.main.temp);
   var description = capitaliseFirstLetter(data.weather[0].description);
-  var speed = data.wind.speed;
+  var speed = msToMph(data.wind.speed);
   var humidity = data.main.humidity;
-  var pressure = data.main.pressure;
+  var pressure = Math.round(data.main.pressure);
 
   console.log("Ajax: Success");
   console.log(data);
-  console.log("Location:", cityName, cityCountry, cityID);
+  console.log("Location:", cityCountry);
   console.log("Icon:", icon);
   console.log("Temp:", temp);
   console.log("Description:", description);
@@ -47,7 +46,7 @@ function getData(data) {
   console.log("Humidity:", humidity);
   console.log("Pressure:", pressure);
 
-  $("#location").html(cityName + " " + cityCountry);
+  $("#location").html(cityCountry);
   $("#icon").removeClass().addClass("wi " + icon);
   $("#temp").html(temp);
   $("#description").html(description);
@@ -137,6 +136,12 @@ function convertTemp() {
   } else {
     $("#temp").html(metricToImperial(tempMetric));
   }
+}
+
+function msToMph(ms) {
+  //3600s = 1hr
+  //1609.34m = 1mile
+  return Math.round(ms * 3600 / 1609.34)
 }
 
 function savedSessionLocation() {
