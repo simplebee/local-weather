@@ -1,4 +1,4 @@
-function ajax(data) {
+function weatherApi(data) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
     data: data,
@@ -7,13 +7,13 @@ function ajax(data) {
   });
 }
 
-function ajaxDoneFail(data) {
-  return ajax(data).done(getData).fail(function() {
+function weatherDoneFail(data) {
+  return weatherApi(data).done(setWeather).fail(function() {
     console.log("Ajax: Fail");
   });
 }
 
-function extendAjaxData(obj) {
+function weatherAjaxData(obj) {
   var src = {
     units: "metric",
     APPID: openWeatherMap.apikey
@@ -26,7 +26,7 @@ function extendAjaxData(obj) {
   return src;
 }
 
-function getData(data) {
+function setWeather(data) {
   var cityCountry = data.name + " " + data.sys.country;
   var cityID = data.id;
   var icon = getIcon(data.weather[0].icon);
@@ -59,6 +59,40 @@ function getData(data) {
   convertTemp();
 }
 
+function geoApi() {
+  return $.ajax({
+    url: "http://ip-api.com/json",
+    type: "GET",
+    datatype: "json"
+  });
+}
+
+function geoDoneFail() {
+  return geoApi().done(getLonLat).fail(function(jqXHR, textStatus, errorThrown) {
+    console.log("Geo: Fail");
+    console.log(jqXHR);
+    console.log(textStatus);
+    console.log(errorThrown);
+  });
+}
+
+function getLonLat(data) {
+  var latCoord = data.lat;
+  var lonCoord = data.lon;
+
+  console.log("Geo: Success");
+  console.log(data);
+  console.log("Lat:", latCoord);
+  console.log("Lon:", lonCoord);
+
+  var obj= {
+    lat: latCoord,
+    lon: lonCoord
+  };
+
+  weatherDoneFail(weatherAjaxData(obj));
+}
+
 function getIcon(id) {
   var icon = {
     "01d": "wi-day-sunny",
@@ -83,48 +117,20 @@ function getIcon(id) {
   return icon[id];
 }
 
-function capitaliseFirstLetter(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function geoSuccess(position) {
-  var latCoord = position.coords.latitude;
-  var lonCoord = position.coords.longitude;
-
-  console.log("Geolocation: Success");
-  console.log("Lat:", latCoord);
-  console.log("Lon:", lonCoord);
-
-  var obj= {
-    lat: latCoord,
-    lon: lonCoord
-  };
-
-  ajaxDoneFail(extendAjaxData(obj));
-}
-
-function geoError(error) {
-  console.log("Geolocation error(" + error.code + "): " + error.message);
-}
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
-  } else {
-    console.log("Geolocation is not supported");
-  }
-}
-
 function getSearch(event) {
   var $searchInput = $("input").val();
   var obj = {
     q: $searchInput
   };
-  ajaxDoneFail(extendAjaxData(obj));
+  weatherDoneFail(weatherAjaxData(obj));
   event.preventDefault();
 }
 
-function metricToImperial(temp) {
+function capitaliseFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function celsiusToFahrenheit(temp) {
   return Math.round(temp * 1.8 + 32);
 }
 
@@ -134,7 +140,7 @@ function convertTemp() {
   if ($toggle.is(":checked")) {
     $("#temp").html(tempMetric);
   } else {
-    $("#temp").html(metricToImperial(tempMetric));
+    $("#temp").html(celsiusToFahrenheit(tempMetric));
   }
 }
 
@@ -155,8 +161,8 @@ function savedSessionLocation() {
 
 $(document).ready(function() {
   var obj = savedSessionLocation();
-  ajaxDoneFail(extendAjaxData(obj));
-  $("#getlocation").on("click", getLocation);
+  weatherDoneFail(weatherAjaxData(obj));
+  $("#getlocation").on("click", geoDoneFail);
   $("form").on("submit", getSearch);
   $("#toggle").on("change", convertTemp);
 });
