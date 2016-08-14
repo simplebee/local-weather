@@ -18,41 +18,47 @@
   <body>
     <div class="container-fluid">
       <div class="row">
+        <!-- Empty whitespace -->
         <div class="col-md-3"></div>
+        <!-- Main container -->
         <div class="col-md-6">
+          <!-- Navbar -->
           <nav class="navbar navbar-default">
             <div class="container-fluid">
+              <!-- Search box -->
               <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="Search city">
                 </div>
-                <button type="submit" class="btn btn-default" id="searchbutton"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
               </form>
-              <button type="button" class="btn btn-default navbar-btn" id="getlocation"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button>
+              <!-- Location button -->
+              <button type="button" class="btn btn-default navbar-btn" id="btn-location"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button>
+              <!-- Toggle button -->
               <form class="navbar-form navbar-right">
-                <input type="checkbox" id="toggle" checked data-toggle="toggle" data-on="°C" data-off="°F">
+                <input type="checkbox" id="btn-toggle" checked data-toggle="toggle" data-on="°C" data-off="°F">
               </form>
             </div>
           </nav>
           <!-- Location -->
           <div class="row">
             <div class="col-md-12">
-              <h1 id="location"></h1>
+              <h1 id="info-location"></h1>
             </div>
           </div>
           <!-- Weather icon & temp -->
           <div class="row">
             <div class="col-md-6">
-              <i id="icon"></i>
+              <i id="info-icon"></i>
             </div>
             <div class="col-md-6">
-              <p id="temp"></p>
+              <p id="info-temp"></p>
             </div>
           </div>
           <!-- Weather description -->
           <div class="row">
             <div class="col-md-12">
-              <p id="description"></p>
+              <p id="info-description"></p>
             </div>
           </div>
           <div class="row">
@@ -60,13 +66,13 @@
             <div class="col-md-10">
               <!-- Weather extra -->
               <div class="col-md-4">
-                <p>Wind <span id="wind"></span> mph</p>
+                <p>Wind <span id="info-wind"></span> mph</p>
               </div>
               <div class="col-md-4">
-                <p>Humdity <span id="humidity"></span> %</p>
+                <p>Humdity <span id="info-humidity"></span> %</p>
               </div>
               <div class="col-md-4">
-                <p>Pressure <span id="pressure"></span> hPa</p>
+                <p>Pressure <span id="info-pressure"></span> hPa</p>
               </div>
             </div>
             <div class="col-md-1"></div>
@@ -76,6 +82,7 @@
             <p>Weather API by <a href="http://openweathermap.org/">OpenWeatherMap</a></p>
           </div>
         </div>
+        <!-- Empty whitespace -->
         <div class="col-md-3"></div>
       </div>
     </div>

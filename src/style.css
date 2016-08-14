@@ -3,18 +3,18 @@ body {
   background-color: #222725;
 }
 
-#location,
-#time,
-#icon,
-#temp,
-#description {
+#info-location,
+#info-time,
+#info-icon,
+#info-temp,
+#info-description {
   text-align: center;
 }
 
-#temp {
+#info-temp {
   font-size: 10em;
 }
 
-#icon {
+#info-icon {
   font-size: 10em;
 }

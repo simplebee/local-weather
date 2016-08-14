@@ -1,3 +1,4 @@
+// Uses openweathermap api, gets current weather
 function weatherApi(data) {
   return $.ajax({
     url: "http://api.openweathermap.org/data/2.5/weather",
@@ -13,23 +14,25 @@ function weatherDoneFail(data) {
   });
 }
 
-function weatherAjaxData(obj) {
-  var src = {
+// Merges 2 objects into 1 object
+// Creates a data object for openweathermap ajax request
+function weatherAjaxData(src) {
+  var obj = {
     units: "metric",
     APPID: openWeatherMap.apikey
   };
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      src[key] = obj[key];
+  for (var key in src) {
+    if (src.hasOwnProperty(key)) {
+      obj[key] = src[key];
     }
   }
-  return src;
+  return obj;
 }
 
 function setWeather(data) {
   var cityCountry = data.name + " " + data.sys.country;
   var cityID = data.id;
-  var icon = getIcon(data.weather[0].icon);
+  var icon = convertIcon(data.weather[0].icon);
   var temp = Math.round(data.main.temp);
   var description = capitaliseFirstLetter(data.weather[0].description);
   var speed = msToMph(data.wind.speed);
@@ -46,19 +49,21 @@ function setWeather(data) {
   console.log("Humidity:", humidity);
   console.log("Pressure:", pressure);
 
-  $("#location").html(cityCountry);
-  $("#icon").removeClass().addClass("wi " + icon);
-  $("#temp").html(temp);
-  $("#description").html(description);
-  $("#wind").html(speed);
-  $("#humidity").html(humidity);
-  $("#pressure").html(pressure);
+  $("#info-location").html(cityCountry);
+  $("#info-icon").removeClass().addClass("wi " + icon);
+  $("#info-temp").html(temp);
+  $("#info-description").html(description);
+  $("#info-wind").html(speed);
+  $("#info-humidity").html(humidity);
+  $("#info-pressure").html(pressure);
 
   sessionStorage.setItem("tempMetric", temp);
   sessionStorage.setItem("cityID", cityID);
+
   convertTemp();
 }
 
+// Uses ip-api, with ip can get latitude and longitude
 function geoApi() {
   return $.ajax({
     url: "http://ip-api.com/json",
@@ -67,6 +72,7 @@ function geoApi() {
   });
 }
 
+// Adblock extensions can cause ajax to fail
 function geoDoneFail() {
   return geoApi().done(getLonLat).fail(function(jqXHR, textStatus, errorThrown) {
     console.log("Geo: Fail");
@@ -85,15 +91,35 @@ function getLonLat(data) {
   console.log("Lat:", latCoord);
   console.log("Lon:", lonCoord);
 
-  var obj= {
+  var location = {
     lat: latCoord,
     lon: lonCoord
   };
-
-  weatherDoneFail(weatherAjaxData(obj));
+  weatherDoneFail(weatherAjaxData(location));
 }
 
-function getIcon(id) {
+function getSearch(event) {
+  var $searchInput = $("input").val();
+  var location = {
+    q: $searchInput
+  };
+  weatherDoneFail(weatherAjaxData(location));
+  event.preventDefault();
+}
+
+// Persistent location on browser refresh
+function savedSessionLocation() {
+  var cityID = sessionStorage.cityID;
+  if (cityID == undefined) {
+    return {q: "london"};
+  } else {
+    return {id: cityID};
+  }
+}
+
+// Converts openweathermap icons to "weather icons"
+// https://erikflowers.github.io/weather-icons/
+function convertIcon(id) {
   var icon = {
     "01d": "wi-day-sunny",
     "01n": "wi-night-clear",
@@ -117,52 +143,36 @@ function getIcon(id) {
   return icon[id];
 }
 
-function getSearch(event) {
-  var $searchInput = $("input").val();
-  var obj = {
-    q: $searchInput
-  };
-  weatherDoneFail(weatherAjaxData(obj));
-  event.preventDefault();
+// Ajax gets metric temp, checks toggle status and adjust units
+function convertTemp() {
+  var $toggle = $("#btn-toggle");
+  var tempMetric = sessionStorage.tempMetric;
+  if ($toggle.is(":checked")) {
+    $("#info-temp").html(tempMetric);
+  } else {
+    $("#info-temp").html(celsiusToFahrenheit(tempMetric));
+  }
+}
+
+// F = C * 1.8 + 32
+function celsiusToFahrenheit(temp) {
+  return Math.round(temp * 1.8 + 32);
+}
+
+// 3600 sec = 1 hr
+// 1609.34 meter = 1 mile
+function msToMph(ms) {
+  return Math.round(ms * 3600 / 1609.34)
 }
 
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function celsiusToFahrenheit(temp) {
-  return Math.round(temp * 1.8 + 32);
-}
-
-function convertTemp() {
-  var $toggle = $("#toggle");
-  var tempMetric = sessionStorage.tempMetric;
-  if ($toggle.is(":checked")) {
-    $("#temp").html(tempMetric);
-  } else {
-    $("#temp").html(celsiusToFahrenheit(tempMetric));
-  }
-}
-
-function msToMph(ms) {
-  //3600s = 1hr
-  //1609.34m = 1mile
-  return Math.round(ms * 3600 / 1609.34)
-}
-
-function savedSessionLocation() {
-  var cityID = sessionStorage.cityID;
-  if (cityID == undefined) {
-    return {q: "london"};
-  } else {
-    return {id: cityID};
-  }
-}
-
 $(document).ready(function() {
-  var obj = savedSessionLocation();
-  weatherDoneFail(weatherAjaxData(obj));
-  $("#getlocation").on("click", geoDoneFail);
+  var location = savedSessionLocation();
+  weatherDoneFail(weatherAjaxData(location));
+  $("#btn-location").on("click", geoDoneFail);
   $("form").on("submit", getSearch);
-  $("#toggle").on("change", convertTemp);
+  $("#btn-toggle").on("change", convertTemp);
 });
