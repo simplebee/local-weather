@@ -36,7 +36,8 @@ function weatherAjaxData(src) {
 }
 
 function setWeather(data) {
-  var cityCountry = data.name + " " + data.sys.country;
+  var city = data.name;
+  var country = data.sys.country;
   var cityID = data.id;
   var icon = convertIcon(data.weather[0].icon);
   var temp = Math.round(data.main.temp);
@@ -47,7 +48,9 @@ function setWeather(data) {
 
   console.log("Ajax: Success");
   console.log(data);
-  console.log("Location:", cityCountry);
+  console.log("City:", city);
+  console.log("Country:", country);
+  console.log("City ID:", cityID);
   console.log("Icon:", icon);
   console.log("Temp:", temp);
   console.log("Description:", description);
@@ -55,7 +58,8 @@ function setWeather(data) {
   console.log("Humidity:", humidity);
   console.log("Pressure:", pressure);
 
-  $("#info-location").html(cityCountry);
+  $("#info-city").html(city);
+  $("#info-country").html(country);
   $("#info-icon").removeClass().addClass("wi " + icon);
   $("#info-temp").html(temp);
   $("#info-description").html(description);

@@ -3,7 +3,8 @@ body {
   background-color: #222725;
 }
 
-#info-location,
+#info-city,
+#info-country,
 #info-time,
 #info-icon,
 #info-temp,
