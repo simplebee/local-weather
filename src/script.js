@@ -9,8 +9,14 @@ function weatherApi(data) {
 }
 
 function weatherDoneFail(data) {
-  return weatherApi(data).done(setWeather).fail(function() {
+  return weatherApi(data).done(setWeather).fail(function(jqXHR, textStatus, errorThrown) {
     console.log("Ajax: Fail");
+    console.log(jqXHR);
+    console.log(textStatus);
+    console.log(errorThrown);
+
+    var message = "We are unable to retreive the current weather";
+    showErrorAlert(message);
   });
 }
 
@@ -79,6 +85,9 @@ function geoDoneFail() {
     console.log(jqXHR);
     console.log(textStatus);
     console.log(errorThrown);
+
+    var message = "We are unable to retreive your current locaton";
+    showErrorAlert(message);
   });
 }
 
@@ -99,9 +108,9 @@ function getLonLat(data) {
 }
 
 function getSearch(event) {
-  var $searchInput = $("input").val();
+  var $inputVal = $("input").val();
   var location = {
-    q: $searchInput
+    q: $inputVal
   };
   weatherDoneFail(weatherAjaxData(location));
   event.preventDefault();
@@ -145,9 +154,9 @@ function convertIcon(id) {
 
 // Ajax gets metric temp, checks toggle status and adjust units
 function convertTemp() {
-  var $toggle = $("#btn-toggle");
+  var $btnToggle = $("#btn-toggle");
   var tempMetric = sessionStorage.tempMetric;
-  if ($toggle.is(":checked")) {
+  if ($btnToggle.is(":checked")) {
     $("#info-temp").html(tempMetric);
   } else {
     $("#info-temp").html(celsiusToFahrenheit(tempMetric));
@@ -155,8 +164,8 @@ function convertTemp() {
 }
 
 // F = C * 1.8 + 32
-function celsiusToFahrenheit(temp) {
-  return Math.round(temp * 1.8 + 32);
+function celsiusToFahrenheit(c) {
+  return Math.round(c * 1.8 + 32);
 }
 
 // 3600 sec = 1 hr
@@ -167,6 +176,23 @@ function msToMph(ms) {
 
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function showErrorAlert(str) {
+  var $alert = $(".alert");
+  var alertMessage = '<div class="alert alert-danger alert-dismissible">' +
+    '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+    '    <span aria-hidden="true">&times;</span>' +
+    '  </button>' +
+    '  <p>Sorry!</p>' +
+    '  <p>' + str + '</p>' +
+    '</div>';
+
+  if ($alert.length) {
+    $alert.remove();
+  }
+
+  $("nav").after(alertMessage);
 }
 
 $(document).ready(function() {
