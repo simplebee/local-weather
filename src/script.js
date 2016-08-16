@@ -9,15 +9,10 @@ function weatherApi(data) {
 }
 
 function weatherDoneFail(data) {
-  return weatherApi(data).done(setWeather).fail(function(jqXHR, textStatus, errorThrown) {
-    console.log("Ajax: Fail");
-    console.log(jqXHR);
-    console.log(textStatus);
-    console.log(errorThrown);
+  var consoleMsg = "OpenWeatherMap: Fail";
+  var alertMsg = "We are unable to retreive the current weather";
 
-    var message = "We are unable to retreive the current weather";
-    showErrorAlert(message);
-  });
+  return weatherApi(data).done(setWeather).fail(handleError(consoleMsg, alertMsg));
 }
 
 // Merges 2 objects into 1 object
@@ -46,7 +41,7 @@ function setWeather(data) {
   var humidity = data.main.humidity;
   var pressure = Math.round(data.main.pressure);
 
-  console.log("Ajax: Success");
+  console.log("OpenWeatherMap: Success");
   console.log(data);
   console.log("City:", city);
   console.log("Country:", country);
@@ -84,22 +79,17 @@ function geoApi() {
 
 // Adblock extensions can cause ajax to fail
 function geoDoneFail() {
-  return geoApi().done(getLonLat).fail(function(jqXHR, textStatus, errorThrown) {
-    console.log("Geo: Fail");
-    console.log(jqXHR);
-    console.log(textStatus);
-    console.log(errorThrown);
+  var consoleMsg = "ip-api: Fail";
+  var alertMsg = "We are unable to retreive your current locaton";
 
-    var message = "We are unable to retreive your current locaton";
-    showErrorAlert(message);
-  });
+  return geoApi().done(getLonLat).fail(handleError(consoleMsg, alertMsg));
 }
 
 function getLonLat(data) {
   var latCoord = data.lat;
   var lonCoord = data.lon;
 
-  console.log("Geo: Success");
+  console.log("ip-api: Success");
   console.log(data);
   console.log("Lat:", latCoord);
   console.log("Lon:", lonCoord);
@@ -182,9 +172,23 @@ function capitaliseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function showErrorAlert(str) {
+// Create closure in handleError function, to pass additional parameters
+// Returns .fail callback
+function handleError(consoleMsg, alertMsg) {
+  return function(jqXHR, textStatus, errorThrown) {
+    console.log(consoleMsg);
+    console.log(jqXHR);
+    console.log(textStatus);
+    console.log(errorThrown);
+
+    showAlert(alertMsg);
+  };
+}
+
+// Show only 1 alert message at a time
+function showAlert(str) {
   var $alert = $(".alert");
-  var alertMessage = '<div class="alert alert-danger alert-dismissible">' +
+  var alertPopup = '<div class="alert alert-danger alert-dismissible">' +
     '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
     '    <span aria-hidden="true">&times;</span>' +
     '  </button>' +
@@ -196,7 +200,7 @@ function showErrorAlert(str) {
     $alert.remove();
   }
 
-  $("nav").after(alertMessage);
+  $("nav").after(alertPopup);
 }
 
 $(document).ready(function() {
