@@ -66,6 +66,12 @@ function setWeather(data) {
   sessionStorage.setItem("cityID", cityID);
 
   convertTemp();
+  removeAlert();
+  
+  if ($("#container-weather").is(":hidden")) {
+    $("#container-weather").show();
+  }
+
 }
 
 // Uses ip-api, with ip can get latitude and longitude
@@ -165,7 +171,7 @@ function celsiusToFahrenheit(c) {
 // 3600 sec = 1 hr
 // 1609.34 meter = 1 mile
 function msToMph(ms) {
-  return Math.round(ms * 3600 / 1609.34)
+  return Math.round(ms * 3600 / 1609.34);
 }
 
 function capitaliseFirstLetter(str) {
@@ -182,25 +188,34 @@ function handleError(consoleMsg, alertMsg) {
     console.log(errorThrown);
 
     showAlert(alertMsg);
+
+    if ($("#info-temp").is(":empty")) {
+      $("#container-weather").hide();
+    }
   };
 }
 
 // Show only 1 alert message at a time
 function showAlert(str) {
-  var $alert = $(".alert");
-  var alertPopup = '<div class="alert alert-danger alert-dismissible">' +
-    '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-    '    <span aria-hidden="true">&times;</span>' +
-    '  </button>' +
-    '  <p>Sorry!</p>' +
-    '  <p>' + str + '</p>' +
+  var alertPopup =
+    '<div class="alert alert-danger alert-dismissible">' +
+      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span>' +
+      '</button>' +
+      '<p>Sorry!</p>' +
+      '<p>' + str + '</p>' +
+      '<p>Please, try again later</p>' +
     '</div>';
 
+  removeAlert();
+  $("nav").after(alertPopup);
+}
+
+function removeAlert() {
+  var $alert = $(".alert");
   if ($alert.length) {
     $alert.remove();
   }
-
-  $("nav").after(alertPopup);
 }
 
 $(document).ready(function() {
