@@ -108,12 +108,27 @@ function getLonLat(data) {
 }
 
 function getSearch(event) {
-  var $inputVal = $("input").val();
-  var location = {
-    q: $inputVal
-  };
-  weatherDoneFail(weatherAjaxData(location));
+  var $inputVal = $.trim($("input").val());
+
+  if (validateInput($inputVal)) {
+    var location = {
+      q: $inputVal
+    };
+    weatherDoneFail(weatherAjaxData(location));
+  } else {
+    console.log("Search: Fail");
+  }
   event.preventDefault();
+}
+
+function validateInput(input) {
+  var regex = /^[A-Za-z-, ]+$/;
+  
+  if (regex.test(input)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Persistent location on browser refresh
