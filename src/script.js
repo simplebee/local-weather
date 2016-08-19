@@ -10,7 +10,7 @@ function weatherApi(data) {
 
 function weatherDoneFail(data) {
   var consoleMsg = "OpenWeatherMap: Fail";
-  var alertMsg = "We are unable to retreive the current weather";
+  var alertMsg = "Unable to retreive the current weather";
 
   return weatherApi(data).done(setWeather).fail(handleError(consoleMsg, alertMsg));
 }
@@ -86,7 +86,7 @@ function geoApi() {
 // Adblock extensions can cause ajax to fail
 function geoDoneFail() {
   var consoleMsg = "ip-api: Fail";
-  var alertMsg = "We are unable to retreive your current locaton";
+  var alertMsg = "Unable to retreive your current locaton";
 
   return geoApi().done(getLonLat).fail(handleError(consoleMsg, alertMsg));
 }
@@ -116,7 +116,8 @@ function getSearch(event) {
     };
     weatherDoneFail(weatherAjaxData(location));
   } else {
-    console.log("Search: Fail");
+    var alertMsg = "Invaild search";
+    showAlert(alertMsg);
   }
   event.preventDefault();
 }
@@ -217,9 +218,7 @@ function showAlert(str) {
       '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
         '<span aria-hidden="true">&times;</span>' +
       '</button>' +
-      '<p>Sorry!</p>' +
-      '<p>' + str + '</p>' +
-      '<p>Please, try again later</p>' +
+      '<p>Sorry! ' + str + ', please try again</p>' +
     '</div>';
 
   removeAlert();
