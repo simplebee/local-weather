@@ -12,7 +12,7 @@ function weatherDoneFail(data) {
   var consoleMsg = "OpenWeatherMap: Fail";
   var alertMsg = "Unable to retreive the current weather";
 
-  return weatherApi(data).done(setWeather).fail(handleError(consoleMsg, alertMsg));
+  return weatherApi(data).done(setWeather).fail(ajaxFail(consoleMsg, alertMsg));
 }
 
 // Merges 2 objects into 1 object
@@ -76,7 +76,7 @@ function setWeather(data) {
       $("#container-weather").show();
     }
   } else {
-    console.log("OpenWeatherMap: Fail");
+    console.log("OpenWeatherMap: Error retreiving data");
     showAlert("Unable to retreive the current weather");
   }
 }
@@ -95,7 +95,7 @@ function geoDoneFail() {
   var consoleMsg = "ip-api: Fail";
   var alertMsg = "Unable to retreive your current locaton";
 
-  return geoApi().done(getLonLat).fail(handleError(consoleMsg, alertMsg));
+  return geoApi().done(getLonLat).fail(ajaxFail(consoleMsg, alertMsg));
 }
 
 function getLonLat(data) {
@@ -117,7 +117,7 @@ function getLonLat(data) {
     };
     weatherDoneFail(weatherAjaxData(location));
   } else {
-    console.log("ip-api: Fail");
+    console.log("ip-api: Error retreiving data");
     showAlert("Unable to retreive your current locaton");
   }
 }
@@ -157,8 +157,8 @@ function getSearch(event) {
     };
     weatherDoneFail(weatherAjaxData(location));
   } else {
-    var alertMsg = "Invaild search";
-    showAlert(alertMsg);
+    console.log("Search: Invaild characters");
+    showAlert("Invaild search");
   }
   event.preventDefault();
 }
@@ -173,9 +173,9 @@ function validateInput(input) {
   }
 }
 
-// Create closure in handleError function, to pass additional parameters
+// Create closure in ajaxFail function, to pass additional parameters
 // Returns .fail callback
-function handleError(consoleMsg, alertMsg) {
+function ajaxFail(consoleMsg, alertMsg) {
   return function(jqXHR, textStatus, errorThrown) {
     console.log(consoleMsg);
     console.log(jqXHR);
@@ -183,10 +183,6 @@ function handleError(consoleMsg, alertMsg) {
     console.log(errorThrown);
 
     showAlert(alertMsg);
-
-    if ($("#info-temp").is(":empty")) {
-      $("#container-weather").hide();
-    }
   };
 }
 
@@ -202,6 +198,10 @@ function showAlert(str) {
 
   removeAlert();
   $("nav").after(alertPopup);
+
+  if ($("#info-temp").is(":empty")) {
+    $("#container-weather").hide();
+  }
 }
 
 function removeAlert() {
