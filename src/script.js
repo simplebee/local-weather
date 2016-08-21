@@ -99,16 +99,27 @@ function geoDoneFail() {
 }
 
 function getLonLat(data) {
-  var latCoord = data.lat;
-  var lonCoord = data.lon;
 
-  console.log("ip-api: Success");
+  var key = [
+    "lat",
+    "lon"
+  ];
 
-  var location = {
-    lat: latCoord,
-    lon: lonCoord
-  };
-  weatherDoneFail(weatherAjaxData(location));
+  if (validateApiData(data, key)) {
+    var latCoord = data.lat;
+    var lonCoord = data.lon;
+
+    console.log("ip-api: Success");
+
+    var location = {
+      lat: latCoord,
+      lon: lonCoord
+    };
+    weatherDoneFail(weatherAjaxData(location));
+  } else {
+    console.log("ip-api: Fail");
+    showAlert("Unable to retreive your current locaton");
+  }
 }
 
 // Checks an array of keys
