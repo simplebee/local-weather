@@ -19,7 +19,6 @@ function weatherDoneFail(data) {
 // Creates a data object for openweathermap ajax request
 function weatherAjaxData(src) {
   var obj = {
-    units: "metric",
     APPID: openWeatherMap.apikey
   };
   for (var key in src) {
@@ -49,7 +48,7 @@ function setWeather(data) {
     var country = data.sys.country;
     var cityID = data.id;
     var icon = convertIcon(data.weather[0].icon);
-    var temp = Math.round(data.main.temp);
+    var temp = data.main.temp;
     var description = capitaliseFirstLetter(data.weather[0].description);
     var speed = msToMph(data.wind.speed);
     var humidity = data.main.humidity;
@@ -66,7 +65,7 @@ function setWeather(data) {
     $("#info-humidity").html(humidity);
     $("#info-pressure").html(pressure);
 
-    sessionStorage.setItem("tempMetric", temp);
+    sessionStorage.setItem("tempKelvin", temp);
     sessionStorage.setItem("cityID", cityID);
 
     convertTemp();
@@ -247,20 +246,25 @@ function convertIcon(id) {
   return icon[id];
 }
 
-// Ajax gets metric temp, checks toggle status and adjust units
+// Checks toggle status and adjust units
 function convertTemp() {
   var $btnToggle = $("#btn-toggle");
-  var tempMetric = sessionStorage.tempMetric;
+  var tempKelvin = sessionStorage.tempKelvin;
   if ($btnToggle.is(":checked")) {
-    $("#info-temp").html(tempMetric);
+    $("#info-temp").html(kelvinToCelsius(tempKelvin));
   } else {
-    $("#info-temp").html(celsiusToFahrenheit(tempMetric));
+    $("#info-temp").html(kelvinToFahrenheit(tempKelvin));
   }
 }
 
-// F = C * 1.8 + 32
-function celsiusToFahrenheit(c) {
-  return Math.round(c * 1.8 + 32);
+// C = (K - 273.15)
+function kelvinToCelsius(k) {
+  return Math.round(k - 273.15);
+}
+
+// F = (K - 273.15) * 1.8 + 32
+function kelvinToFahrenheit(k) {
+  return Math.round((k - 273.15) * 1.8 + 32);
 }
 
 // 3600 sec = 1 hr
