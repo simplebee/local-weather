@@ -31,47 +31,54 @@ function weatherAjaxData(src) {
 }
 
 function setWeather(data) {
-  var city = data.name;
-  var country = data.sys.country;
-  var cityID = data.id;
-  var icon = convertIcon(data.weather[0].icon);
-  var temp = Math.round(data.main.temp);
-  var description = capitaliseFirstLetter(data.weather[0].description);
-  var speed = msToMph(data.wind.speed);
-  var humidity = data.main.humidity;
-  var pressure = Math.round(data.main.pressure);
-
-  console.log("OpenWeatherMap: Success");
-  console.log(data);
-  console.log("City:", city);
-  console.log("Country:", country);
-  console.log("City ID:", cityID);
-  console.log("Icon:", icon);
-  console.log("Temp:", temp);
-  console.log("Description:", description);
-  console.log("Wind:", speed);
-  console.log("Humidity:", humidity);
-  console.log("Pressure:", pressure);
-
-  $("#info-city").html(city);
-  $("#info-country").html(country);
-  $("#info-icon").removeClass().addClass("wi " + icon);
-  $("#info-temp").html(temp);
-  $("#info-description").html(description);
-  $("#info-wind").html(speed);
-  $("#info-humidity").html(humidity);
-  $("#info-pressure").html(pressure);
-
-  sessionStorage.setItem("tempMetric", temp);
-  sessionStorage.setItem("cityID", cityID);
-
-  convertTemp();
-  removeAlert();
+  var key = [
+    "name",
+    "sys.country",
+    "id",
+    "weather.0.icon",
+    "main.temp",
+    "weather.0.description",
+    "wind.speed",
+    "main.humidity",
+    "main.pressure"
+  ];
   
-  if ($("#container-weather").is(":hidden")) {
-    $("#container-weather").show();
-  }
+  if (validateApiData(data, key)) {
 
+    var city = data.name;
+    var country = data.sys.country;
+    var cityID = data.id;
+    var icon = convertIcon(data.weather[0].icon);
+    var temp = Math.round(data.main.temp);
+    var description = capitaliseFirstLetter(data.weather[0].description);
+    var speed = msToMph(data.wind.speed);
+    var humidity = data.main.humidity;
+    var pressure = Math.round(data.main.pressure);
+
+    console.log("OpenWeatherMap: Success");
+
+    $("#info-city").html(city);
+    $("#info-country").html(country);
+    $("#info-icon").removeClass().addClass("wi " + icon);
+    $("#info-temp").html(temp);
+    $("#info-description").html(description);
+    $("#info-wind").html(speed);
+    $("#info-humidity").html(humidity);
+    $("#info-pressure").html(pressure);
+
+    sessionStorage.setItem("tempMetric", temp);
+    sessionStorage.setItem("cityID", cityID);
+
+    convertTemp();
+    removeAlert();
+    
+    if ($("#container-weather").is(":hidden")) {
+      $("#container-weather").show();
+    }
+  } else {
+    console.log("OpenWeatherMap: Fail");
+    showAlert("Unable to retreive the current weather");
+  }
 }
 
 // Uses ip-api, with ip can get latitude and longitude
@@ -96,15 +103,38 @@ function getLonLat(data) {
   var lonCoord = data.lon;
 
   console.log("ip-api: Success");
-  console.log(data);
-  console.log("Lat:", latCoord);
-  console.log("Lon:", lonCoord);
 
   var location = {
     lat: latCoord,
     lon: lonCoord
   };
   weatherDoneFail(weatherAjaxData(location));
+}
+
+// Checks an array of keys
+// Keys given as a dot-separated string "key1.key2.key3"
+function validateApiData(obj, arr) {
+  for (var i = 0; i < arr.length; i++) {
+    if (!checkObj(obj, arr[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Checks existance of keys in a nested object
+// To avoid getting typeerror for deep nested objects
+// Keys given as a dot-separated string "key1.key2.key3"
+function checkObj(obj, key) {
+  var keyArray = key.split(".");
+  for (var i = 0; i < keyArray.length; i++) {
+    if (!obj || !obj.hasOwnProperty(keyArray[i])) {
+      return false;
+    } else {
+      obj = obj[keyArray[i]];
+    }
+  }
+  return true;
 }
 
 function getSearch(event) {
@@ -129,6 +159,44 @@ function validateInput(input) {
     return true;
   } else {
     return false;
+  }
+}
+
+// Create closure in handleError function, to pass additional parameters
+// Returns .fail callback
+function handleError(consoleMsg, alertMsg) {
+  return function(jqXHR, textStatus, errorThrown) {
+    console.log(consoleMsg);
+    console.log(jqXHR);
+    console.log(textStatus);
+    console.log(errorThrown);
+
+    showAlert(alertMsg);
+
+    if ($("#info-temp").is(":empty")) {
+      $("#container-weather").hide();
+    }
+  };
+}
+
+// Show only 1 alert message at a time
+function showAlert(str) {
+  var alertPopup =
+    '<div class="alert alert-danger alert-dismissible">' +
+      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span>' +
+      '</button>' +
+      '<p>Sorry! ' + str + ', please try again</p>' +
+    '</div>';
+
+  removeAlert();
+  $("nav").after(alertPopup);
+}
+
+function removeAlert() {
+  var $alert = $(".alert");
+  if ($alert.length) {
+    $alert.remove();
   }
 }
 
@@ -192,44 +260,6 @@ function msToMph(ms) {
 
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Create closure in handleError function, to pass additional parameters
-// Returns .fail callback
-function handleError(consoleMsg, alertMsg) {
-  return function(jqXHR, textStatus, errorThrown) {
-    console.log(consoleMsg);
-    console.log(jqXHR);
-    console.log(textStatus);
-    console.log(errorThrown);
-
-    showAlert(alertMsg);
-
-    if ($("#info-temp").is(":empty")) {
-      $("#container-weather").hide();
-    }
-  };
-}
-
-// Show only 1 alert message at a time
-function showAlert(str) {
-  var alertPopup =
-    '<div class="alert alert-danger alert-dismissible">' +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-        '<span aria-hidden="true">&times;</span>' +
-      '</button>' +
-      '<p>Sorry! ' + str + ', please try again</p>' +
-    '</div>';
-
-  removeAlert();
-  $("nav").after(alertPopup);
-}
-
-function removeAlert() {
-  var $alert = $(".alert");
-  if ($alert.length) {
-    $alert.remove();
-  }
 }
 
 $(document).ready(function() {
