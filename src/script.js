@@ -21,11 +21,13 @@ function weatherAjaxData(src) {
   var obj = {
     APPID: openWeatherMap.apikey
   };
+
   for (var key in src) {
     if (src.hasOwnProperty(key)) {
       obj[key] = src[key];
     }
   }
+
   return obj;
 }
 
@@ -43,7 +45,6 @@ function setWeather(data) {
   ];
   
   if (validateApiData(data, key)) {
-
     var city = data.name;
     var country = data.sys.country;
     var cityID = data.id;
@@ -55,7 +56,6 @@ function setWeather(data) {
     var pressure = Math.round(data.main.pressure);
 
     console.log("OpenWeatherMap: Success");
-
     $("#info-city").html(city);
     $("#info-country").html(country);
     $("#info-icon").removeClass().addClass("wi " + icon);
@@ -64,10 +64,8 @@ function setWeather(data) {
     $("#info-wind").html(speed);
     $("#info-humidity").html(humidity);
     $("#info-pressure").html(pressure);
-
     sessionStorage.setItem("tempKelvin", temp);
     sessionStorage.setItem("cityID", cityID);
-
     convertTemp();
     removeAlert();
     
@@ -98,7 +96,6 @@ function geoDoneFail() {
 }
 
 function getLonLat(data) {
-
   var key = [
     "lat",
     "lon"
@@ -107,13 +104,12 @@ function getLonLat(data) {
   if (validateApiData(data, key)) {
     var latCoord = data.lat;
     var lonCoord = data.lon;
-
-    console.log("ip-api: Success");
-
     var location = {
       lat: latCoord,
       lon: lonCoord
     };
+
+    console.log("ip-api: Success");
     weatherDoneFail(weatherAjaxData(location));
   } else {
     console.log("ip-api: Error retreiving data");
@@ -129,6 +125,7 @@ function validateApiData(obj, arr) {
       return false;
     }
   }
+
   return true;
 }
 
@@ -137,6 +134,7 @@ function validateApiData(obj, arr) {
 // Keys given as a dot-separated string "key1.key2.key3"
 function checkObj(obj, key) {
   var keyArray = key.split(".");
+
   for (var i = 0; i < keyArray.length; i++) {
     if (!obj || !obj.hasOwnProperty(keyArray[i])) {
       return false;
@@ -144,6 +142,7 @@ function checkObj(obj, key) {
       obj = obj[keyArray[i]];
     }
   }
+
   return true;
 }
 
@@ -154,11 +153,13 @@ function getSearch(event) {
     var location = {
       q: $inputVal
     };
+
     weatherDoneFail(weatherAjaxData(location));
   } else {
     console.log("Search: Invaild characters");
     showAlert("Invaild search");
   }
+
   event.preventDefault();
 }
 
@@ -180,7 +181,6 @@ function ajaxFail(consoleMsg, alertMsg) {
     console.log(jqXHR);
     console.log(textStatus);
     console.log(errorThrown);
-
     showAlert(alertMsg);
   };
 }
@@ -205,6 +205,7 @@ function showAlert(str) {
 
 function removeAlert() {
   var $alert = $(".alert");
+
   if ($alert.length) {
     $alert.remove();
   }
@@ -213,7 +214,8 @@ function removeAlert() {
 // Persistent location on browser refresh
 function savedSessionLocation() {
   var cityID = sessionStorage.cityID;
-  if (cityID == undefined) {
+
+  if (typeof(cityID) === "undefined") {
     return {q: "london"};
   } else {
     return {id: cityID};
@@ -242,7 +244,8 @@ function convertIcon(id) {
     "13n": "wi-snow",
     "50d": "wi-fog",
     "50n": "wi-fog"
-  }
+  };
+
   return icon[id];
 }
 
@@ -250,6 +253,7 @@ function convertIcon(id) {
 function convertTemp() {
   var $btnToggle = $("#btn-toggle");
   var tempKelvin = sessionStorage.tempKelvin;
+
   if ($btnToggle.is(":checked")) {
     $("#info-temp").html(kelvinToCelsius(tempKelvin));
   } else {
@@ -279,6 +283,7 @@ function capitaliseFirstLetter(str) {
 
 $(document).ready(function() {
   var location = savedSessionLocation();
+
   weatherDoneFail(weatherAjaxData(location));
   $("#btn-location").on("click", geoDoneFail);
   $("form").on("submit", getSearch);
