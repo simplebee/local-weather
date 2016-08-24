@@ -45,36 +45,42 @@ function setWeather(data) {
   ];
   
   if (validateApiData(data, key)) {
-    var city = data.name;
-    var country = data.sys.country;
-    var cityID = data.id;
-    var icon = convertIcon(data.weather[0].icon);
-    var temp = data.main.temp;
-    var description = capitaliseFirstLetter(data.weather[0].description);
-    var speed = msToMph(data.wind.speed);
-    var humidity = data.main.humidity;
-    var pressure = Math.round(data.main.pressure);
-
+    sessionStorage.setItem("tempKelvin", data.main.temp);
+    sessionStorage.setItem("cityID", data.id);
     console.log("OpenWeatherMap: Success");
-    $("#info-city").html(city);
-    $("#info-country").html(country);
-    $("#info-icon").removeClass().addClass("wi " + icon);
-    $("#info-temp").html(temp);
-    $("#info-description").html(description);
-    $("#info-wind").html(speed);
-    $("#info-humidity").html(humidity);
-    $("#info-pressure").html(pressure);
-    sessionStorage.setItem("tempKelvin", temp);
-    sessionStorage.setItem("cityID", cityID);
-    convertTemp();
+    showWeatherContainer();
     removeAlert();
-    
-    if ($("#container-weather").is(":hidden")) {
-      $("#container-weather").show();
-    }
+    setWeatherHtml(data);
+    convertTemp();
   } else {
     console.log("OpenWeatherMap: Error retreiving data");
     showAlert("Unable to retreive the current weather");
+  }
+}
+
+function setWeatherHtml(data) {
+  var city = data.name;
+  var country = data.sys.country;
+  var icon = convertIcon(data.weather[0].icon);
+  var temp = data.main.temp;
+  var description = capitaliseFirstLetter(data.weather[0].description);
+  var speed = msToMph(data.wind.speed);
+  var humidity = data.main.humidity;
+  var pressure = Math.round(data.main.pressure);
+
+  $("#info-city").html(city);
+  $("#info-country").html(country);
+  $("#info-icon").removeClass().addClass("wi " + icon);
+  $("#info-temp").html(temp);
+  $("#info-description").html(description);
+  $("#info-wind").html(speed);
+  $("#info-humidity").html(humidity);
+  $("#info-pressure").html(pressure);
+}
+
+function showWeatherContainer() {
+  if ($("#container-weather").is(":hidden")) {
+    $("#container-weather").show();
   }
 }
 
