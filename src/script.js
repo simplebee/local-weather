@@ -1,3 +1,5 @@
+var tempKelvin;
+
 // Uses openweathermap api, gets current weather
 function weatherApi(data) {
   return $.ajax({
@@ -45,7 +47,7 @@ function setWeather(data) {
   ];
   
   if (validateApiData(data, key)) {
-    sessionStorage.setItem("tempKelvin", data.main.temp);
+    tempKelvin = data.main.temp;
     sessionStorage.setItem("cityID", data.id);
     console.log("OpenWeatherMap: Success");
     showWeatherContainer();
@@ -221,8 +223,8 @@ function removeAlert() {
 function savedSessionLocation() {
   var cityID = sessionStorage.cityID;
 
-  if (typeof(cityID) === "undefined") {
-    return {q: "london"};
+  if (!cityID) {
+    return {q: "london,uk"};
   } else {
     return {id: cityID};
   }
@@ -258,12 +260,13 @@ function convertIcon(id) {
 // Checks toggle status and adjust units
 function convertTemp() {
   var $btnToggle = $("#btn-toggle");
-  var tempKelvin = sessionStorage.tempKelvin;
 
-  if ($btnToggle.is(":checked")) {
-    $("#info-temp").html(kelvinToCelsius(tempKelvin));
-  } else {
-    $("#info-temp").html(kelvinToFahrenheit(tempKelvin));
+  if (tempKelvin) {
+    if ($btnToggle.is(":checked")) {
+      $("#info-temp").html(kelvinToCelsius(tempKelvin));
+    } else {
+      $("#info-temp").html(kelvinToFahrenheit(tempKelvin));
+    }
   }
 }
 
@@ -289,7 +292,6 @@ function capitaliseFirstLetter(str) {
 
 $(document).ready(function() {
   var location = savedSessionLocation();
-
   weatherDoneFail(weatherAjaxData(location));
   $("#btn-location").on("click", geoDoneFail);
   $("form").on("submit", getSearch);
