@@ -15,7 +15,13 @@ body {
 }
 
 #container-icontemp {
-  font-size: 15em;
+  font-size: 18em;
+}
+
+#searchbox {
+  position: absolute;
+  width: 100%;
+  text-align: center;
 }
 
 /*Generated bootstrap navbar color scheme*/

@@ -24,18 +24,18 @@
           <nav class="navbar navbar-default">
             <div class="container-fluid">
               <!-- Search box -->
-              <form class="navbar-form navbar-left" role="search">
+              <form class="navbar-form" id="searchbox" role="search">
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="Search city">
                 </div>
                 <button type="submit" class="btn btn-default">
                   <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                 </button>
+                <!-- Location button -->
+                <button type="button" class="btn btn-default" id="btn-location">
+                  <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                </button>
               </form>
-              <!-- Location button -->
-              <button type="button" class="btn btn-default navbar-btn" id="btn-location">
-                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-              </button>
               <!-- Toggle button -->
               <form class="navbar-form navbar-right">
                 <input type="checkbox" id="btn-toggle" checked data-toggle="toggle" data-on="°C" data-off="°F">
@@ -82,10 +82,6 @@
                 <div class="col-md-1"></div>
               </div>
             </div>
-          </div>
-          <!-- Footer -->
-          <div class="row">
-            <p>Weather API by <a href="http://openweathermap.org/">OpenWeatherMap</a></p>
           </div>
         </div>
         <!-- Empty whitespace -->
